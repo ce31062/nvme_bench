@@ -1,0 +1,14 @@
+script=pcie_test.sh
+argument=all
+version=3.0
+2024年  1月 17日 水曜日 17:19:18 JST
+------------------------------------------------
+        Argument:
+            secure_erase, s: secure erase
+            throughput,t: throuput
+            latency, l: latency
+            all, a: latency & throughput
+            help, h: help
+        ------------------------------------------------------
+=============================mount==============================
+Input device name (ex.nvme0n1):

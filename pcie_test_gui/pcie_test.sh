@@ -5,6 +5,11 @@ version="3.0"
 declare -g directory
 declare -g current_directory
 
+if [ "$1" == "test" ]; then	
+    echo "hello world"
+fi
+
+
 #log export path
     current_directory=$(pwd)
     case "$1" in
@@ -48,10 +53,8 @@ declare -g current_directory
     echo "=============================mount==============================" | tee -a $LOG
         
         echo -n "Input device name (ex.nvme0n1):" | tee -a $LOG 
-            read device   
-        echo -n "Input directory mount name (ex.gen3):" | tee -a $LOG 
-            read directory 　
-        sudo mount /dev/"$device" /"$directory" | tee -a $LOG   
+        read device   
+        sudo mount /dev/"$device" /test_bench | tee -a $LOG   
         echo "Complete!" | tee -a $LOG 
         sudo df | tee -a $LOG 
 
@@ -75,12 +78,8 @@ declare -g current_directory
 #Move directory
     if [[ "$1" != "secure_erase" && "$1" != "s" ]]; then	
         echo "=================================================================" | tee -a $LOG
-
-        echo -n "Input directory name created by mount (ex.gen3):" | tee -a $LOG 
-            read directory
-            
-        cd /"$directory"
-        echo "★Moved to $directory" | tee -a $LOG 
+        cd /test_bench
+        echo "Moved to test_bench directory" | tee -a $LOG 
 
         echo "Start measurement after 5sec.Please wait..."
         sleep 5
@@ -89,19 +88,17 @@ declare -g current_directory
 
 	echo "/////  Start measurement!  /////" | tee -a $LOG
         echo "LinuxPC" | tee -a $LOG  
-
     fi 
 #====================Throughput=======================  
     if [[ "$1" == "throughput" || "$1" == "t" || "$1" == "all" || "$1" == "a" ]]; then
 
-        echo "★Measuring throughput" | tee -a $LOG
+        echo "Measuring throughput" | tee -a $LOG
 
         #Copy fio.txt
         source_file="$current_directory"
-        target_file="$directory"
         txt="fio.txt"
 
-        cp /"$source_file/$txt" /"$target_file"
+        cp /"$source_file/$txt" /test_bench
         echo "Copy done" | tee -a $LOG
 
         # Initialization
@@ -111,7 +108,7 @@ declare -g current_directory
         fi
 
         date
-        sudo smartctl -a /dev/nvme0 | grep Temperature | tee -a $LOG
+        #sudo smartctl -a /dev/nvme0 | grep Temperature | tee -a $LOG
         echo "------------------------------------------------" | tee -a $LOG
 
         fio -f fio.txt --output-format=terse | awk -F ';' '{ speed = (($7+$48) * 1024) / 1000; unit = "KB/s";
@@ -185,7 +182,7 @@ declare -g current_directory
 
         ) | tee -a $LOG        
     fi  
-          
+    
     sudo rm RND*
     sudo rm SEQ*
     

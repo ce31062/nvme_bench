@@ -6,10 +6,10 @@ class BenchmarkApp:
     def __init__(self, root):
         self.root = root
         self.root.title("NVMe Benchmark tool for Linux")
-        self.root.geometry("500x300")
+        self.root.geometry("800x600")
 
         # 「All」ボタンの作成
-        self.all_button = tk.Button(self.root, text="All", bg="green2", command=self.execute_pcie_test_all)
+        self.all_button = tk.Button(self.root, text="All", bg="green2", command=self.execute_pcie_test)
         self.all_button.grid(column=0, row=0, padx=10, pady=5, sticky="w")
 
         # ディスクリストの選択用の変数とドロップダウンリストの作成
@@ -44,17 +44,17 @@ class BenchmarkApp:
         nvme_disks = [disk for disk in os.listdir("/dev") if disk.startswith("nvme")]
         return nvme_disks
 
-    def execute_pcie_test_all(self):
+    def execute_pcie_test(self):
         selected_disk = self.selected_disk.get()
         # 各チェックボックスの状態に応じて処理を行う
         if self.secure_erase_val.get() or self.throughput_val.get() or self.latency_val.get():
             if selected_disk:
                 if self.secure_erase_val.get():
-                    subprocess.run(["sudo", "bash", "pcie_test_all.sh", "h", selected_disk])
+                    subprocess.run(["sudo", "bash", "pcie_test.sh", "h", selected_disk])
                 if self.throughput_val.get():
-                    subprocess.run(["sudo", "bash", "pcie_test_all.sh", "t", selected_disk])
+                    subprocess.run(["sudo", "bash", "pcie_test.sh", "t", selected_disk])
                 if self.latency_val.get():
-                    subprocess.run(["sudo", "bash", "pcie_test_all.sh", "l", selected_disk])
+                    subprocess.run(["sudo", "bash", "pcie_test.sh", "l", selected_disk])
                 self.result_label.config(text="")
             else:
                 self.result_label.config(text="ディスクを選択してください")
